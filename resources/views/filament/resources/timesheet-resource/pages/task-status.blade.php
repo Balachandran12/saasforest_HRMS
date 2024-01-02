@@ -21,7 +21,7 @@
             height: 800px; */
         }
         .board-list {
-            /* background-color: rgb(235, 236, 240); */
+            /*background-color: rgb(235, 236, 240);*/
             border-radius: 3px;
              display: grid;
             grid-auto-rows: max-content;
@@ -58,23 +58,42 @@
     </div>
 {{-- Task card Section --}}
   @if($clicktap=='1')
+
     <div class=" pt-8">
         <img src="/icon/line.svg" alt="" class=" w-full">
-        <div id='boardlists' class="board-lists  flex justify-between pt-10">
-            <div id='list1' class="board-list w-[280px]" ondrop="dropIt(event)" ondragover="allowDrop(event)">
+        <div id='boardlists' class="board-lists  flex justify-between pt-10 gap-2">
+            <div id='list0' class="board-list w-[280px]" ondrop="dropIt(event)" ondragover="allowDrop(event)">
                 <div class="list-title flex gap-x-10">
-                    <span class="text-[#172B4D]">UNDER REVIEW</span>
+                    <span class="text-[#172B4D]">Backlog</span>
                     <span class=" flex items-center justify-center  bg-[#E5E5E5] rounded-full h-6 w-6">{{$count_assined}}</span>
                 </div>
                 @foreach ($project_assined as $assined)
                     <div class="border border-[#D1D5D8] rounded-[14px] p-5 shadow-[0px_1px_3px_0px_rgba(0,0,0,0.07)] mt-10" wire:key="{{$assined->id}}" id='{{ $assined->id }}' class="card " draggable="true" ondragstart="dragStart(event)" wire:click="open({{$assined->task_id}})">
                         <div>
-                            <b>{{ $assined->task->name }}</b>
-                            <p>{{ $assined->task->description }}</p>
+                            <b>{{ substr($assined->task->name,0,18) }}...</b>
+                            <p>{{ substr($assined->task->description,0,25) }}..</p>
                         </div>
                         {{-- @dd($pro_task) --}}
                         <div class=" pt-5">
                             <img src="{{$assined->users->employee->profile_picture_url}}" alt="" class="h-10 w-10 rounded-full">
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            <div id='list1' class="board-list w-[280px]" ondrop="dropIt(event)" ondragover="allowDrop(event)">
+                <div class="list-title flex gap-x-10">
+                    <span class="text-[#172B4D]">UNDER REVIEW</span>
+                    <span class=" flex items-center justify-center  bg-[#E5E5E5] rounded-full h-6 w-6">{{$count_planing}}</span>
+                </div>
+                @foreach ($planing as $plan)
+                    <div class="border border-[#D1D5D8] rounded-[14px] p-5 shadow-[0px_1px_3px_0px_rgba(0,0,0,0.07)] mt-10" wire:key="{{$plan->id}}" id='{{ $plan->id }}' class="card " draggable="true" ondragstart="dragStart(event)" wire:click="open({{$plan->task_id}})">
+                        <div>
+                            <b>{{ substr($plan->task->name,0,18) }}..</b>
+                            <p>{{ substr($plan->task->description,0,25) }}..</p>
+                        </div>
+                        {{-- @dd($pro_task) --}}
+                        <div class=" pt-5">
+                            <img src="{{$plan->users->employee->profile_picture_url}}" alt="" class="h-10 w-10 rounded-full">
                         </div>
                     </div>
                 @endforeach
@@ -88,12 +107,12 @@
 
                 <div class="border border-[#D1D5D8] rounded-[14px] p-5 shadow-[0px_1px_3px_0px_rgba(0,0,0,0.07)] mt-10" wire:key="{{$inprogress->id}}" id='{{ $inprogress->id }}' class="card" draggable="true" ondragstart="dragStart(event)" wire:click="open({{$inprogress->task_id}})">
                     <div>
-                        <b>{{ $inprogress->task->name }}</b>
-                        <p>{{ $inprogress->task->description }}</p>
+                        <b>{{ substr($inprogress->task->name,0,18) }}...</b>
+                        <p>{{ substr($inprogress->task->description,0,25) }}..</p>
                     </div>
                     <div class=" pt-5 flex gap-5 items-center">
                         <img src="{{$inprogress->users->employee->profile_picture_url}}" alt="" class="h-10 w-10 rounded-full">
-                        <p>AssinedBy:{{$inprogress->createdBy->name}}</p>
+                        {{-- <p>AssinedBy:{{$inprogress->createdBy->name}}</p> --}}
                     </div>
                 </div>
                 @endforeach
@@ -107,12 +126,12 @@
                 @foreach ($project_ready as $ready)
                 <div class="border border-[#D1D5D8] rounded-[14px] p-5 shadow-[0px_1px_3px_0px_rgba(0,0,0,0.07)] mt-10" wire:key="{{$ready->id}}" id='{{ $ready->id }}' class="card" :draggable="{{auth()->id()}}=={{$ready->user_id}}||{{auth()->id()}}=={{$ready->created_by}}?'true':'false'" ondragstart="dragStart(event)" wire:click="open({{$ready->task_id}})">
                     <div>
-                        <b>{{ $ready->task->name }}</b>
-                        <p>{{ $ready->task->description }}</p>
+                        <b>{{ substr($ready->task->name,0,18) }}..</b>
+                        <p>{{ substr($ready->task->description,0,25) }}..</p>
                     </div>
                     <div class="flex gap-5 items-center pt-5">
                         <img src="{{$ready->users->employee->profile_picture_url}}" alt="" class="h-10 w-10 rounded-full">
-                  
+
                         {{-- <p>AssinedBy:{{$ready->createdBy->name}}</p> --}}
                     </div>
                 </div>
@@ -127,8 +146,8 @@
                 @foreach ($project_done as $done)
                 <div class="border border-[#D1D5D8] rounded-[14px] p-5 shadow-[0px_1px_3px_0px_rgba(0,0,0,0.07)] mt-10" wire:key="{{$done->id}}" id='{{ $done->id }}' class="card" draggable="true" ondragstart="dragStart(event)" wire:click="open({{$done->task_id}})">
                     <div>
-                        <b>{{ $done->task->name }}</b>
-                        <p>{{ $done->task->description }}</p>
+                        <b>{{ substr($done->task->name,0,18) }}...</b>
+                        <p>{{ substr($done->task->description,0,25) }}..</p>
                     </div>
                     <div class="flex gap-5 pt-5 items-center">
                         <img src="{{$done->users->employee->profile_picture_url}}" alt="" class="h-10 w-10 rounded-full">
@@ -216,4 +235,5 @@
             // }
         }
     </script>
+
 </x-filament-panels::page>

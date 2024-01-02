@@ -24,7 +24,7 @@ return new class extends Migration
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('updated_by')->references('id')->on('users')->onDelete('cascade');
             $table->time('end_time')->nullable();
-            $table->enum('status', ['assigned', 'inprogress', 'ready','done','decline'])->default('assigned');
+            $table->enum('status', ['assigned','planing','inprogress','ready','done','decline'])->default('assigned');
             $table->timestamps();
         });
     }

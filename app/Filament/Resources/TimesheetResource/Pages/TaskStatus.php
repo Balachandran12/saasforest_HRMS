@@ -19,6 +19,7 @@ class TaskStatus extends Page
 
     public $record;
     public $project_assined;
+    public $planing;
     public $project_inpro;
     public $project_done;
     public $project_ready;
@@ -50,7 +51,8 @@ class TaskStatus extends Page
                     ->title('Task move into Ready for QA')
                     ->actions([
                         Action::make('view')
-                            ->button()->close()->url('/timesheet/timesheets/'.$project_id[0]->project_id.'/edit'),
+                            ->button()->close()->url('/timesheet/timesheets/'.$project_id[0]->project_id.'/edit')
+                            ->markAsRead(),
 
                     ])
                     ->toDatabase(),
@@ -59,18 +61,22 @@ class TaskStatus extends Page
         elseif($this->store_id=='list4'){
             Timesheet::where('id', $this->card_id)->update(['status' => 'done']);
         }
-        else{
+        elseif($this->store_id=='list1'){
+            Timesheet::where('id', $this->card_id)->update(['status' => 'planing']);
+        }else{
             Timesheet::where('id', $this->card_id)->update(['status' => 'assigned']);
         }
         $this->callStatus($this->record);
     }
     public $count_assined;
+    public $count_planing;
     public $count_inpro;
     public $count_ready;
     public $count_done;
     public function callStatus($id){
         // dd(Timesheet::all());
         $this->project_assined=Timesheet::where('project_id',$id)->where('status','assigned')->with('task')->with('users.employee','createdBy')->get();
+        $this->planing=Timesheet::where('project_id',$id)->where('status','planing')->with('task')->with('users.employee','createdBy')->get();
         $this->project_inpro=Timesheet::where('project_id',$id)->where('status','inprogress')->with('task')->with('users.employee','createdBy')->get();
         $this->project_done=Timesheet::where('project_id',$id)->where('status','done')->with('task')->with('users.employee','createdBy')->get();
         $this->project_ready=Timesheet::where('project_id',$id)->where('status','ready')->with('task')->with('users.employee','createdBy')->get();
@@ -79,6 +85,7 @@ class TaskStatus extends Page
 
     public function StatusCount($id){
         $this->count_assined=Timesheet::where('project_id',$id)->where('status','assigned')->with('task')->count();
+        $this->count_planing=Timesheet::where('project_id',$id)->where('status','planing')->with('task')->count();
         $this->count_inpro=Timesheet::where('project_id',$id)->where('status','inprogress')->with('task')->count();
         $this->count_ready=Timesheet::where('project_id',$id)->where('status','ready')->with('task')->count();
         $this->count_done=Timesheet::where('project_id',$id)->where('status','done')->with('task')->count();

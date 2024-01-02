@@ -172,7 +172,7 @@ class TimesheetResource extends Resource
                 Tables\Columns\TextColumn::make('statu')
                 ->default(function($record){
                     // dd($record);
-                    $assine_count=Timesheet::where('project_id',$record->id)->where('status','assined')->count();
+                    $assine_count=Timesheet::where('project_id',$record->id)->where('status','planing')->count();
                     $inpro_count=Timesheet::where('project_id',$record->id)->where('status','inprogress')->count();
                     $ready_count=Timesheet::where('project_id',$record->id)->where('status','ready')->count();
                     $done_count=Timesheet::where('project_id',$record->id)->where('status','done')->count();
@@ -194,7 +194,7 @@ class TimesheetResource extends Resource
                         elseif($inpro_count+$assine_count< $total_RD){
                         return '80%';
                         }
-                        
+
                     }
 
                 })
