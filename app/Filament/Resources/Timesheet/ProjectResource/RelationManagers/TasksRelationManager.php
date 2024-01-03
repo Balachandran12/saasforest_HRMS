@@ -48,7 +48,15 @@ class TasksRelationManager extends RelationManager
                     }),
                     Select::make('author_id')
                     ->label('Assinee')
-                    ->options(User::all()->pluck('name', 'id'))
+                    ->options(function(){
+                        $owner=$this->getOwnerRecord();
+                        $user=Project::where('team_id',$owner->team_id)->pluck('user_id');
+                        $team_user=[];
+                        foreach($user as $u){
+                            $w[]=$u;
+                        }
+                        return User::whereIn('id',$team_user)->pluck('name','id');
+                    })
                     ->searchable(),
 
                 Forms\Components\DatePicker::make('end_date')

@@ -40,7 +40,8 @@
             /* background-color: white; */
             /* border-radius: 3px; */
             /* box-shadow: 0 1px 0 rgba(9, 30, 66, .25); */
-            /* padding: 10px; */
+            padding: 10px;
+
             cursor: pointer;
         }
     </style>
@@ -68,15 +69,15 @@
                     <span class=" flex items-center justify-center  bg-[#E5E5E5] rounded-full h-6 w-6">{{$count_assined}}</span>
                 </div>
                 @foreach ($project_assined as $assined)
-                    <div class="border border-[#D1D5D8] rounded-[14px] p-5 shadow-[0px_1px_3px_0px_rgba(0,0,0,0.07)] mt-10" wire:key="{{$assined->id}}" id='{{ $assined->id }}' class="card " draggable="true" ondragstart="dragStart(event)" wire:click="open({{$assined->task_id}})">
-                        <div>
-                            <b>{{ substr($assined->task->name,0,18) }}...</b>
-                            <p>{{ substr($assined->task->description,0,25) }}..</p>
-                        </div>
-                        {{-- @dd($pro_task) --}}
-                        <div class=" pt-5">
-                            <img src="{{$assined->users->employee->profile_picture_url}}" alt="" class="h-10 w-10 rounded-full">
-                        </div>
+                    <div class="border border-[#D1D5D8] rounded-[14px] p-5 shadow-[0px_1px_3px_0px_rgba(0,0,0,0.07)] mt-10" wire:key="{{$assined->id}}" id='{{ $assined->id }}'  draggable="true" ondragstart="dragStart(event)" wire:click="open({{$assined->task_id}})">
+
+                        {{-- <div> --}}
+                            {{ substr($assined->task->name,0,18) }}...<br>
+                            {{ substr($assined->task->description,0,20) }}..
+                        {{-- </div> --}}
+                        {{-- <div class=" pt-5"> --}}
+                            <img src="{{$assined->users->employee->profile_picture_url}}" alt="" class="h-10 w-10 mt-2 rounded-full">
+                        {{-- </div> --}}
                     </div>
                 @endforeach
             </div>
@@ -87,14 +88,12 @@
                 </div>
                 @foreach ($planing as $plan)
                     <div class="border border-[#D1D5D8] rounded-[14px] p-5 shadow-[0px_1px_3px_0px_rgba(0,0,0,0.07)] mt-10" wire:key="{{$plan->id}}" id='{{ $plan->id }}' class="card " draggable="true" ondragstart="dragStart(event)" wire:click="open({{$plan->task_id}})">
-                        <div>
-                            <b>{{ substr($plan->task->name,0,18) }}..</b>
-                            <p>{{ substr($plan->task->description,0,25) }}..</p>
-                        </div>
-                        {{-- @dd($pro_task) --}}
-                        <div class=" pt-5">
-                            <img src="{{$plan->users->employee->profile_picture_url}}" alt="" class="h-10 w-10 rounded-full">
-                        </div>
+
+                            {{ substr($plan->task->name,0,18) }}..<br>
+                            {{ substr($plan->task->description,0,20) }}..
+
+                            <img src="{{$plan->users->employee->profile_picture_url}}" alt="" class="h-10 w-10 mt-2 rounded-full">
+
                     </div>
                 @endforeach
             </div>
@@ -106,14 +105,14 @@
                 @foreach ($project_inpro as $inprogress)
 
                 <div class="border border-[#D1D5D8] rounded-[14px] p-5 shadow-[0px_1px_3px_0px_rgba(0,0,0,0.07)] mt-10" wire:key="{{$inprogress->id}}" id='{{ $inprogress->id }}' class="card" draggable="true" ondragstart="dragStart(event)" wire:click="open({{$inprogress->task_id}})">
-                    <div>
-                        <b>{{ substr($inprogress->task->name,0,18) }}...</b>
-                        <p>{{ substr($inprogress->task->description,0,25) }}..</p>
-                    </div>
-                    <div class=" pt-5 flex gap-5 items-center">
-                        <img src="{{$inprogress->users->employee->profile_picture_url}}" alt="" class="h-10 w-10 rounded-full">
+
+                       {{ substr($inprogress->task->name,0,18) }}...<br>
+                        {{ substr($inprogress->task->description,0,20) }}..
+
+
+                        <img src="{{$inprogress->users->employee->profile_picture_url}}" alt="" class="h-10 w-10 mt-2 rounded-full">
                         {{-- <p>AssinedBy:{{$inprogress->createdBy->name}}</p> --}}
-                    </div>
+
                 </div>
                 @endforeach
             </div>
@@ -125,15 +124,9 @@
                 </div>
                 @foreach ($project_ready as $ready)
                 <div class="border border-[#D1D5D8] rounded-[14px] p-5 shadow-[0px_1px_3px_0px_rgba(0,0,0,0.07)] mt-10" wire:key="{{$ready->id}}" id='{{ $ready->id }}' class="card" :draggable="{{auth()->id()}}=={{$ready->user_id}}||{{auth()->id()}}=={{$ready->created_by}}?'true':'false'" ondragstart="dragStart(event)" wire:click="open({{$ready->task_id}})">
-                    <div>
-                        <b>{{ substr($ready->task->name,0,18) }}..</b>
-                        <p>{{ substr($ready->task->description,0,25) }}..</p>
-                    </div>
-                    <div class="flex gap-5 items-center pt-5">
-                        <img src="{{$ready->users->employee->profile_picture_url}}" alt="" class="h-10 w-10 rounded-full">
-
-                        {{-- <p>AssinedBy:{{$ready->createdBy->name}}</p> --}}
-                    </div>
+                        {{ substr($ready->task->name,0,18) }}..<br>
+                        {{ substr($ready->task->description,0,20) }}..
+                        <img src="{{$ready->users->employee->profile_picture_url}}" alt="" class="h-10 w-10 mt-2 rounded-full">
                 </div>
                 @endforeach
             </div>
@@ -145,14 +138,12 @@
                 </div>
                 @foreach ($project_done as $done)
                 <div class="border border-[#D1D5D8] rounded-[14px] p-5 shadow-[0px_1px_3px_0px_rgba(0,0,0,0.07)] mt-10" wire:key="{{$done->id}}" id='{{ $done->id }}' class="card" draggable="true" ondragstart="dragStart(event)" wire:click="open({{$done->task_id}})">
-                    <div>
-                        <b>{{ substr($done->task->name,0,18) }}...</b>
-                        <p>{{ substr($done->task->description,0,25) }}..</p>
-                    </div>
-                    <div class="flex gap-5 pt-5 items-center">
-                        <img src="{{$done->users->employee->profile_picture_url}}" alt="" class="h-10 w-10 rounded-full">
+
+                        {{ substr($done->task->name,0,18) }}...<br>
+                        {{ substr($done->task->description,0,20) }}..
+                        <img src="{{$done->users->employee->profile_picture_url}}" alt="" class="h-10 w-10 mt-2 rounded-full">
                         {{-- <p>AssinedBy:{{$done->createdBy->name}}</p> --}}
-                    </div>
+
                 </div>
                 @endforeach
             </div>
@@ -211,11 +202,12 @@
             let targetParentEl = targetEl.parentElement;
             if (targetParentEl.id !== sourceIdParentEl.id) {
                 if (targetEl.className === sourceIdEl.className) {
-                    console.log('yes');
+                    let parentID=targetEl.parentElement;
                     Livewire.dispatch('post-created', {
                         postId: sourceId,
-                        id: targetEl.id
+                        id: parentID.id
                     })
+                    console.log('yes');
                     targetParentEl.appendChild(sourceIdEl);
                 } else {
                     Livewire.dispatch('post-created', {
@@ -225,14 +217,14 @@
                     targetEl.appendChild(sourceIdEl);
                 }
             }
-            // else {
-            //     console.log('no');
-            //     let holder = targetEl;
-            //     let holderText = holder.textContent;
-            //     targetEl.textContent = sourceIdEl.textContent;
-            //     sourceIdEl.textContent = holderText;
-            //     holderText = '';
-            // }
+            else {
+                // console.log('no');
+                // let holder = targetEl;
+                // let holderText = holder.textContent;
+                // targetEl.textContent = sourceIdEl.textContent;
+                // sourceIdEl.textContent = holderText;
+                // holderText = '';
+            }
         }
     </script>
 

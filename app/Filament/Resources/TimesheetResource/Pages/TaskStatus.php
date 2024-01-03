@@ -34,9 +34,11 @@ class TaskStatus extends Page
  public $store_id;
     #[On('post-created')]
     public function save($postId,$id){
+        // dd($id,$postId);
         $this->store_id=$id;
         $this->card_id=$postId;
         if($this->store_id=='list2'){
+
             Timesheet::where('id', $this->card_id)->update(['status' => 'inprogress']);
         }
         elseif($this->store_id=='list3'){
@@ -63,8 +65,10 @@ class TaskStatus extends Page
         }
         elseif($this->store_id=='list1'){
             Timesheet::where('id', $this->card_id)->update(['status' => 'planing']);
-        }else{
+        }elseif($this->store_id=='list0'){
             Timesheet::where('id', $this->card_id)->update(['status' => 'assigned']);
+        }else{
+
         }
         $this->callStatus($this->record);
     }
@@ -115,4 +119,6 @@ class TaskStatus extends Page
     public function OpenTap($value){
         $this->clicktap=$value;
     }
+
+
 }
