@@ -179,6 +179,9 @@ class TimesheetResource extends Resource
                     $total_count=$assine_count+$inpro_count+$ready_count+$done_count;
                     $total_RD=$ready_count+$done_count;
                     if($total_count==$done_count){
+                        if($total_count==0){
+                            return '0%';
+                        }
                         return '100%';
                     }elseif($total_count==$ready_count ){
                         return '90%';
@@ -227,77 +230,77 @@ class TimesheetResource extends Resource
 
             ->actions([
 
-                Tables\Actions\EditAction::make()
+                // Tables\Actions\EditAction::make()
 
-                    ->label('Update Status')
-                    ->visible(function($record){
-                        // dd($record->created_by);
-                        // dd(auth()->id());
+                //     ->label('Update Status')
+                //     ->visible(function($record){
+                //         // dd($record->created_by);
+                //         // dd(auth()->id());
 
-                        // $test=Timesheet::where()->get();
-                        // dd($record->user_id);
+                //         // $test=Timesheet::where()->get();
+                //         // dd($record->user_id);
 
-                        if($record->user_id==auth()->id())
-                        {
-                            return true;
+                //         if($record->user_id==auth()->id())
+                //         {
+                //             return true;
 
-                        }
-                        else
-                        {
-                            return false;
+                //         }
+                //         else
+                //         {
+                //             return false;
 
-                        }
+                //         }
 
-                    })
-                    ->form([
-                        Forms\Components\Select::make('status')->required()
-                            ->default('draft')
-                            ->options([
-                                'inprogress' => 'In Progress',
-                                'submitted' => 'Submitted',
-                            ])
+                    // })
+                    // ->form([
+                    //     Forms\Components\Select::make('status')->required()
+                    //         ->default('draft')
+                    //         ->options([
+                    //             'inprogress' => 'In Progress',
+                    //             'submitted' => 'Submitted',
+                    //         ])
 
-                    ])->after(function ($record, $data): void {
-                        $random = User::with('jobInfo')->find(auth()->id());
-                        //  dd($random->jobInfo->report_to);
-                        $report = User::find($random->jobInfo->report_to);
-                        // dd($report);
+                    // ])->after(function ($record, $data): void {
+                    //     $random = User::with('jobInfo')->find(auth()->id());
+                    //     //  dd($random->jobInfo->report_to);
+                    //     $report = User::find($random->jobInfo->report_to);
+                    //     // dd($report);
 
-                        $test = Timesheet::Find($record->id);
+                    //     $test = Timesheet::Find($record->id);
 
-                        $test->update([
-                            'status' => $data['status'],
-                        ]);
-                        if($data['status'] == 'inprogress')
-                        {
-                            if($random->jobInfo->report_to != null){
-                                Notification::make()
-                                ->title('The Task is In Progress')
-                                ->actions([
-                                    ActionsAction::make('view')
-                                    ->button()->url('/timesheet/timesheets')
-                                    ->close()
-                                ])
-                                ->sendToDatabase($report);
-                            }
-                        }
-                        if($data['status'] == 'submitted')
-                        {
-                            if($random->jobInfo->report_to != null){
-                                Notification::make()
-                                ->title('The Task is In submitted')
-                                ->actions([
-                                    ActionsAction::make('view')
-                                    ->button()->url('/timesheet/timesheets')
-                                    ->close()
-                                ])
-                                ->sendToDatabase($report);
-                            }
-                        }
+                    //     $test->update([
+                    //         'status' => $data['status'],
+                    //     ]);
+                    //     if($data['status'] == 'inprogress')
+                    //     {
+                    //         if($random->jobInfo->report_to != null){
+                    //             Notification::make()
+                    //             ->title('The Task is In Progress')
+                    //             ->actions([
+                    //                 ActionsAction::make('view')
+                    //                 ->button()->url('/timesheet/timesheets')
+                    //                 ->close()
+                    //             ])
+                    //             ->sendToDatabase($report);
+                    //         }
+                    //     }
+                    //     if($data['status'] == 'submitted')
+                    //     {
+                    //         if($random->jobInfo->report_to != null){
+                    //             Notification::make()
+                    //             ->title('The Task is In submitted')
+                    //             ->actions([
+                    //                 ActionsAction::make('view')
+                    //                 ->button()->url('/timesheet/timesheets')
+                    //                 ->close()
+                    //             ])
+                    //             ->sendToDatabase($report);
+                    //         }
+                    //     }
 
 
 
-                    })
+                    // })
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make()

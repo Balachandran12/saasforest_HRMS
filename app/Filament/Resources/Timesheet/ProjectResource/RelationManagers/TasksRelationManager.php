@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Timesheet\ProjectResource\RelationManagers;
 
 use App\Models\Employee\Employee;
+use App\Models\Employee\JobInfo;
 use App\Models\Timesheet\Project;
 use Filament\Forms;
 use App\Models\Timesheet\Task;
@@ -47,15 +48,18 @@ class TasksRelationManager extends RelationManager
                         }
                     }),
                     Select::make('author_id')
-                    ->label('Assinee')
+                    ->label('Assignee')
                     ->options(function(){
                         $owner=$this->getOwnerRecord();
-                        $user=Project::where('team_id',$owner->team_id)->pluck('user_id');
+                        // dd($owner->team_id);
+                        $user=JobInfo::where('team_id',$owner->team_id)->pluck('user_id');
                         $team_user=[];
                         foreach($user as $u){
-                            $w[]=$u;
+                            $team_user[]=$u;
                         }
-                        return User::whereIn('id',$team_user)->pluck('name','id');
+                        // dd($team_user);
+                        $fd=User::whereIn('id',$team_user)->pluck('name','id')->toArray();
+                        return $fd;
                     })
                     ->searchable(),
 

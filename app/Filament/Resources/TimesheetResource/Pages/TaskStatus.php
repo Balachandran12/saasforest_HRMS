@@ -27,7 +27,7 @@ class TaskStatus extends Page
     {
         static::authorizeResourceAccess();
         $this->callStatus($this->record);
-        // 'assigned', 'inprogress', 'submitted'
+        // 'assigned', 'inprogress', 'submitted','done','planning','ready'
     }
 
  public $card_id;
@@ -38,30 +38,17 @@ class TaskStatus extends Page
         $this->store_id=$id;
         $this->card_id=$postId;
         if($this->store_id=='list2'){
-
             Timesheet::where('id', $this->card_id)->update(['status' => 'inprogress']);
         }
         elseif($this->store_id=='list3'){
-            $notifi=Timesheet::where('id', $this->card_id)->get();
-            $project_id=Timesheet::where('id', $this->card_id)->get();
             Timesheet::where('id', $this->card_id)->update(['status' => 'ready']);
-            $asd=User::find($notifi[0]->created_by);
-            $recipient = $asd;
-            // dd($recipient);
-            $recipient->notify(
-                Notification::make()
-                    ->title('Task move into Ready for QA')
-                    ->actions([
-                        Action::make('view')
-                            ->button()->close()->url('/timesheet/timesheets/'.$project_id[0]->project_id.'/edit')
-                            ->markAsRead(),
-
-                    ])
-                    ->toDatabase(),
-            );
+            $msg="The Task is at Ready for QA";
+            $this->Notify($this->card_id,$msg);
         }
         elseif($this->store_id=='list4'){
             Timesheet::where('id', $this->card_id)->update(['status' => 'done']);
+            $msg="The Task is Completed";
+            $this->Notify($this->card_id,$msg);
         }
         elseif($this->store_id=='list1'){
             Timesheet::where('id', $this->card_id)->update(['status' => 'planing']);
@@ -77,8 +64,9 @@ class TaskStatus extends Page
     public $count_inpro;
     public $count_ready;
     public $count_done;
+    //count the task record respective statuses
     public function callStatus($id){
-        // dd(Timesheet::all());
+        $loggedInUserId=auth()->id();
         $this->project_assined=Timesheet::where('project_id',$id)->where('status','assigned')->with('task')->with('users.employee','createdBy')->get();
         $this->planing=Timesheet::where('project_id',$id)->where('status','planing')->with('task')->with('users.employee','createdBy')->get();
         $this->project_inpro=Timesheet::where('project_id',$id)->where('status','inprogress')->with('task')->with('users.employee','createdBy')->get();
@@ -95,16 +83,17 @@ class TaskStatus extends Page
         $this->count_done=Timesheet::where('project_id',$id)->where('status','done')->with('task')->count();
     }
 
+    //task clicked then open modal details
     public $task_assiner;
     public $task_name;
     public $task_desc;
     public $project_name;
     public function open($task_id){
-        // dd($task_id);
+
         $task_details=Task::find($task_id);
-        // dd(Task::all());
+
         $task_ass=Timesheet::where('task_id',$task_id)->get();
-        // dd($task_ass);
+
         $user=User::find($task_ass[0]->created_by);
         $project_n=Project::find($task_details->project_id);
 
@@ -116,9 +105,29 @@ class TaskStatus extends Page
         $this->dispatch('open-modal', id: 'open');//open card details model
     }
 
+    // open for respective taps chat,task,docs
     public function OpenTap($value){
         $this->clicktap=$value;
     }
 
+    // notification function
+    public function Notify($id,$msg){
+    $notifi=Timesheet::where('id', $id)->get();
+            $project_id=Timesheet::where('id', $id)->get();
+            $userID=User::find($notifi[0]->created_by);
+            $recipient = $userID;
+            // dd($recipient);
+            $recipient->notify(
+                Notification::make()
+                    ->title($msg)
+                    ->actions([
+                        Action::make('view')
+                            ->button()->close()->url('/timesheet/timesheets/'.$project_id[0]->project_id.'/edit')
+                            ->markAsRead(),
+
+                    ])
+                    ->toDatabase(),
+            );
+        }
 
 }
